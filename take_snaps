@@ -5,6 +5,7 @@
 #set timestamp for snapshots
 date=$(TZ=GMT date +@GMT-%Y.%m.%d-%H.%M.%S)
 disk=/mnt/disk3
+MAX_SNAPS=2
 
 #check if date folder exist
 if [ ! -d "$disk/.snapshots/$date/" ] ; then
@@ -13,3 +14,12 @@ fi
 
 #make snapshot
 btrfs subvolume snap -r $disk/Documents $disk/.snapshots/$date/Documents
+
+#find old snaps
+    echo "Found $(find ${disk}/.snapshots/ -maxdepth 1 -mindepth 1 | sort -nr | tail -n +$MAX_SNAPS | wc -l) old snaps"
+        for snap in $(find ${disk}/.snapshots/ -maxdepth 1 -mindepth 1 | sort -nr | tail -n +$MAX_SNAPS); do
+            for share_snap in ${snap}/*; do
+                btrfs subvolume delete $share_snap
+            done
+            rm -rfv $snap
+        done
