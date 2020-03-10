@@ -1,0 +1,7 @@
+#!/bin/bash
+
+#static snapshot script for Documents
+
+#set timestamp for snapshots
+date=$(TZ=GMT date +@GMT-%Y.%m.%d-%H.%M.%S)
+
