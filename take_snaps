@@ -4,4 +4,12 @@
 
 #set timestamp for snapshots
 date=$(TZ=GMT date +@GMT-%Y.%m.%d-%H.%M.%S)
+disk=/mnt/disk3
 
+#check if date folder exist
+if [ ! -d "$disk/.snapshots/$date/" ] ; then
+mkdir -v $disk/.snapshots/$date
+fi
+
+#make snapshot
+btrfs subvolume snap -r $disk/Documents $disk/.snapshots/$date/Documents
